@@ -1,6 +1,6 @@
 class App {
 	constructor() {
-		this.notes = [];
+		this.notes = JSON.parse(localStorage.getItem('notes')) || [];
 		this.title = "";
 		this.text = "";
 		this.id = "";
@@ -18,6 +18,7 @@ class App {
 		this.$modalCloseButton = document.querySelector(".modal-close-button");
 		this.$colorTooltip = document.querySelector("#color-tooltip");
 
+		this.render();
 		this.addEventListeners();
 	}
 
@@ -90,15 +91,15 @@ class App {
 	}
 
 	openForm() {
-		this.$form.classList.add("form-open");
 		this.$noteTitle.style.display = "block";
 		this.$formButtons.style.display = "block";
+		this.$noteText.style.height = "200px"
 	}
-
+	
 	closeForm() {
-		this.$form.classList.remove("form-open");
 		this.$noteTitle.style.display = "none";
 		this.$formButtons.style.display = "none";
+		this.$noteText.style.height = "38px"
 		this.$noteTitle.value = "";
 		this.$noteText.value = "";
 	}
@@ -120,7 +121,7 @@ class App {
 
 	openTooltip(event) {
 		if (!event.target.matches(".toolbar-color")) return;
-		this.id = event.target.nextElementSibling.dataset.id;
+		this.id = event.target.dataset.id;
 		const noteCoords = event.target.getBoundingClientRect();
 		const horizontal = noteCoords.left;
 		const vertical = window.scrollY - 20;
@@ -141,7 +142,7 @@ class App {
 			id: this.notes.length > 0 ? this.notes[this.notes.length - 1].id + 1 : 1
 		};
 		this.notes = [...this.notes, newNote];
-		this.displayNotes();
+		this.render();
 		this.closeForm();
 	}
 
@@ -151,14 +152,14 @@ class App {
 		this.notes = this.notes.map(note =>
 			note.id === Number(this.id) ? { ...note, title, text } : note
 		);
-		this.displayNotes();
+		this.render();
 	}
 
 	editNoteColor(color) {
 		this.notes = this.notes.map(note =>
 			note.id === Number(this.id) ? { ...note, color } : note
 		);
-		this.displayNotes();
+		this.render();
 	}
 
 	selectNote(event) {
@@ -175,32 +176,33 @@ class App {
 		if (!event.target.matches('.toolbar-delete')) return;
 		const id = event.target.dataset.id;
 		this.notes = this.notes.filter(note => note.id !== Number(id));
+		this.render();
+	}
+
+	render() {
+		this.saveNotes();
 		this.displayNotes();
+	}
+
+	saveNotes() {
+		localStorage.setItem('notes', JSON.stringify(this.notes))
 	}
 
 	displayNotes() {
 		const hasNotes = this.notes.length > 0;
-		this.$placeholder.style.display = hasNotes ? "none" : "flex";
+		this.$placeholder.style.display = hasNotes ? "none" : "block";
 
-		this.$notes.innerHTML = this.notes
-			.map(
-				note => `
-        <div style="background: ${note.color};" class="note" data-id="${note.id
-					}">
-          <div class="${note.title && "note-title"}">${note.title}</div>
-          <div class="note-text">${note.text}</div>
-          <div class="toolbar-container">
-            <div class="toolbar">
-              <img class="toolbar-color" data-id=${note.id
-					} src="https://icon.now.sh/palette">
-              <img data-id=${note.id
-					} class="toolbar-delete" src="https://icon.now.sh/delete">
-            </div>
-          </div>
-        </div>
-     `
-			)
-			.join("");
+		this.$notes.innerHTML = this.notes.map(note => `
+		  <div style="background: ${note.color};" class="note" data-id="${note.id}">
+			<div class="${note.title && "note-title"}">${note.title}</div>
+			<div class="note-text">${note.text}</div>
+			<div class="toolbar">
+				<img class="toolbar-color" data-id=${note.id} src="https://cdn.iconscout.com/icon/premium/png-512-thumb/palette-74796.png?f=avif&w=256">
+				<img class="toolbar-delete" data-id=${note.id} src="https://cdn.iconscout.com/icon/free/png-512/delete-2902143-2411575.png?f=avif&w=256">
+			</div>
+		  </div>
+	   `
+		).join("");
 	}
 }
 
