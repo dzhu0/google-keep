@@ -178,6 +178,7 @@ input:focus { outline: none; }
 	display: none;
 	justify-content: space-between;
 	align-items: center;
+	position: fixed;
 	background-color: white;
 	width: 140px;
 	height: 40px;
@@ -192,6 +193,7 @@ input:focus { outline: none; }
 	height: 25px;
 	border-radius: 50%;
 	border: 1px solid #dedede;
+	cursor: pointer;
 }
 
 .color-option:hover { border: 1px solid black; }
