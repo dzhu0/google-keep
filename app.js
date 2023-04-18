@@ -39,6 +39,8 @@ class App {
             } else if (event.target.closest(".note")) {
                 this.selectNote(event)
                 this.openModal()
+            } else if (event.target.dataset.color) {
+                this.editNoteColor(event.target.dataset.color)
             }
         })
 
@@ -46,14 +48,16 @@ class App {
             event.preventDefault()
             const title = this.$noteTitle.value
             const text = this.$noteText.value
-            if (title || text) {
-                this.addNote({ title, text })
-            }
+            if (title || text) this.addNote({ title, text })
         })
 
         this.$formCloseButton.addEventListener("click", event => {
             event.stopPropagation()
             this.closeForm()
+        })
+
+        this.$modalCloseButton.addEventListener("click", event => {
+            this.closeModal(event)
         })
 
         document.addEventListener("mouseover", event => {
@@ -82,17 +86,6 @@ class App {
 
         this.$colorTooltip.addEventListener("mouseleave", () => {
             this.closeTooltip()
-        })
-
-        this.$colorTooltip.addEventListener("click", event => {
-            const color = event.target.dataset.color
-            if (color) {
-                this.editNoteColor(color)
-            }
-        })
-
-        this.$modalCloseButton.addEventListener("click", event => {
-            this.closeModal(event)
         })
     }
 
@@ -188,7 +181,6 @@ class App {
             id: this.id
         }
         const otherNotes = this.notes.filter(note => note.id !== this.id)
-        console.log(otherNotes)
         this.notes = [newNote, ...otherNotes]
         this.render()
     }
