@@ -18,10 +18,10 @@ class App {
         this.$noteText = document.querySelector("#note-text")
         this.$formButtons = document.querySelector("#form-buttons")
         this.$formCloseButton = document.querySelector("#form-close-button")
-        this.$modal = document.querySelector(".modal")
-        this.$modalTitle = document.querySelector(".modal-title")
-        this.$modalText = document.querySelector(".modal-text")
-        this.$modalCloseButton = document.querySelector(".modal-close-button")
+        this.$modal = document.querySelector("#modal")
+        this.$modalTitle = document.querySelector("#modal-title")
+        this.$modalText = document.querySelector("#modal-text")
+        this.$modalCloseButton = document.querySelector("#modal-close-button")
         this.$colorTooltip = document.querySelector("#color-tooltip")
 
         this.render()
@@ -41,6 +41,8 @@ class App {
                 this.openModal()
             } else if (event.target.dataset.color) {
                 this.editNoteColor(event.target.dataset.color)
+            } else if (event.target.matches("#modal-close-button")) {
+                this.closeModal()
             }
         })
 
@@ -54,10 +56,6 @@ class App {
         this.$formCloseButton.addEventListener("click", event => {
             event.stopPropagation()
             this.closeForm()
-        })
-
-        this.$modalCloseButton.addEventListener("click", event => {
-            this.closeModal(event)
         })
 
         document.addEventListener("mouseover", event => {
@@ -91,6 +89,7 @@ class App {
 
     handleFormClick(event) {
         const isFormClicked = this.$form.contains(event.target)
+        // console.log(event.target.closest("#form"))
 
         const title = this.$noteTitle.value
         const text = this.$noteText.value
@@ -101,6 +100,7 @@ class App {
             this.addNote({ title, text })
         } else {
             this.closeForm()
+            console.log('close')
         }
     }
 
