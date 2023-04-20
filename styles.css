@@ -142,13 +142,13 @@ input:focus { outline: none; }
 	margin-top: 20vh;
 }
 
-#placeholder-logo {
+.placeholder-logo {
 	width: 120px;
 	opacity: 0.1;
 	margin: 20px;
 }
 
-#placeholder-text {
+.placeholder-text {
 	color: #80868b;
 	font-size: 1.375rem;
 	cursor: default;
@@ -267,5 +267,9 @@ input:focus { outline: none; }
 	padding: 10px 24px;
 	cursor: pointer;
 }
+
+.modal-title,
+.modal-text,
+.modal-close-button { background-color: transparent; }
 
 .modal-close-button:hover { background-color: rgba(99, 99, 99, 0.09); }

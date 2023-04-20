@@ -14,39 +14,93 @@
 <body>
 	<main>
 		<header>
-			<img class="header-logo" src="https://www.gstatic.com/images/branding/product/1x/keep_48dp.png">
-			<h2 class="header-title">Keep</h2>
+			<img
+                class="header-logo"
+                src="https://www.gstatic.com/images/branding/product/1x/keep_48dp.png">
+			
+            <h2 class="header-title">Keep</h2>
 		</header>
 
 		<form id="form" autocomplete="off">
-			<input id="note-title" placeholder="Title" type="text">
-			<textarea id="note-text" placeholder="Take a note..." type="text"></textarea>
+			<input
+                id="note-title"
+                placeholder="Title"
+                type="text">
+
+			<textarea
+                id="note-text"
+                placeholder="Take a note..."
+                type="text"></textarea>
+
 			<div id="form-buttons">
-				<button type="submit" id="submit-button">Submit</button>
-				<button type="button" id="form-close-button">Close</button>
+				<button
+                    type="submit"
+                    id="submit-button">
+                        Submit
+                </button>
+				<button
+                    type="button"
+                    id="form-close-button">
+                        Close
+                </button>
 			</div>
 		</form>
 
 		<div id="notes"></div>
 
 		<div id="placeholder">
-			<img id="placeholder-logo" src="https://cdn.iconscout.com/icon/free/png-256/google-keep-3628806-3030083.png">
-			<p id="placeholder-text">Notes you add appear here</p>
+			<img
+                class="placeholder-logo"
+                src="https://cdn.iconscout.com/icon/free/png-256/google-keep-3628806-3030083.png">
+			<p class="placeholder-text">Notes you add appear here</p>
 		</div>
 		
 		<div id="color-tooltip">
-			<div class="color-option" data-color="#ffffff" id="white"></div>
-			<div class="color-option" data-color="#d7aefb" id="purple"></div>
-			<div class="color-option" data-color="#fbbc04" id="orange"></div>
-			<div class="color-option" data-color="#a7ffeb" id="teal"></div>
+			<div
+                id="white"
+                class="color-option"
+                data-color="#ffffff">
+            </div>
+
+			<div
+                id="purple"
+                class="color-option"
+                data-color="#d7aefb">
+            </div>
+
+			<div
+                id="orange"
+                class="color-option"
+                data-color="#fbbc04">
+            </div>
+
+			<div
+                id="teal"
+                class="color-option"
+                data-color="#a7ffeb">
+            </div>
 		</div>
 	</main>
 
-	<div class="modal">
+	<div id="modal" class="modal">
 		<div class="modal-content">
-			<input class="modal-title" placeholder="Title" type="text">
-			<textarea class="modal-text" placeholder="Take a note..." type="text"></textarea>
-			<button class="modal-close-button">Close</button>
+			<input
+                id="modal-title"
+                class="modal-title"
+                placeholder="Title"
+                type="text">
+
+			<textarea
+                id="modal-text"
+                class="modal-text"
+                placeholder="Take a note..."
+                type="text"></textarea>
+
+			<button
+                id="modal-close-button"
+                class="modal-close-button">
+                    Close
+            </button>
 		</div>
 	</div>
 
