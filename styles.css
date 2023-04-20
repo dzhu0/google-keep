@@ -268,4 +268,8 @@ input:focus { outline: none; }
 	cursor: pointer;
 }
 
+.modal-title,
+.modal-text,
+.modal-close-button { background-color: transparent; }
+
 .modal-close-button:hover { background-color: rgba(99, 99, 99, 0.09); }
