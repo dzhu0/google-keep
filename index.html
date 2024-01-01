@@ -3,114 +3,76 @@
 <html lang="en">
 
 <head>
-	<title>Google Keep Clone</title>
-	<meta charset="UTF-8">
-	<meta name="description" content="Clone of Google's note-taking service">
-	<meta name="author" content="Daniel Zhu">
-	<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Google Keep Clone</title>
+    <meta charset="UTF-8">
+    <meta name="description" content="This project is a simple web application that mimics the functionality of Google Keep, allowing users to create, edit, and delete notes. The application is built using HTML, CSS, and JavaScript, with Firebase serving as the backend database.">
+    <meta name="author" content="Daniel Zhu">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <!-- Icon -->
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
     <link rel="manifest" href="/site.webmanifest">
-	<!-- Styles -->
-	<link rel="stylesheet" href="styles.css">
-	<!-- Google Fonts -->
-	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:400,500&display=swap">
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    <!-- Google Fonts -->
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans:400,500&display=swap">
 </head>
 
 <body>
-	<main>
-		<header>
-			<img class="header-logo" src="logo.png">
-			
+    <main>
+        <header>
+            <img class="header-logo" src="logo.png">
+
             <h2 class="header-title">Keep</h2>
-		</header>
+        </header>
 
-		<form id="form" autocomplete="off">
-			<input
-                id="note-title"
-                placeholder="Title"
-                type="text">
+        <form id="form" autocomplete="off">
+            <input id="note-title" placeholder="Title" type="text">
 
-			<textarea
-                id="note-text"
-                placeholder="Take a note..."
-                type="text"></textarea>
+            <textarea id="note-text" placeholder="Take a note..." type="text"></textarea>
 
-			<div id="form-buttons">
-				<button
-                    type="submit"
-                    id="submit-button">
-                        Submit
+            <div id="form-buttons">
+                <button type="submit" id="submit-button">
+                    Submit
                 </button>
-				<button
-                    type="button"
-                    id="form-close-button">
-                        Close
-                </button>
-			</div>
-		</form>
-
-		<div id="notes"></div>
-
-		<div id="placeholder">
-			<img
-                class="placeholder-logo"
-                src="placeholder.webp">
-			<p class="placeholder-text">Notes you add appear here</p>
-		</div>
-		
-		<div id="color-tooltip">
-			<div
-                id="white"
-                class="color-option"
-                data-color="#ffffff">
-            </div>
-
-			<div
-                id="purple"
-                class="color-option"
-                data-color="#d7aefb">
-            </div>
-
-			<div
-                id="orange"
-                class="color-option"
-                data-color="#fbbc04">
-            </div>
-
-			<div
-                id="teal"
-                class="color-option"
-                data-color="#a7ffeb">
-            </div>
-		</div>
-	</main>
-
-	<div id="modal" class="modal">
-		<div class="modal-content">
-			<input
-                id="modal-title"
-                class="modal-title"
-                placeholder="Title"
-                type="text">
-
-			<textarea
-                id="modal-text"
-                class="modal-text"
-                placeholder="Take a note..."
-                type="text"></textarea>
-
-			<button
-                id="modal-close-button"
-                class="modal-close-button">
+                <button type="button" id="form-close-button">
                     Close
-            </button>
-		</div>
-	</div>
+                </button>
+            </div>
+        </form>
 
-	<script src="app.js" type="module"></script>
+        <div id="notes"></div>
+
+        <div id="placeholder">
+            <img class="placeholder-logo" src="placeholder.webp">
+            <p class="placeholder-text">Notes you add appear here</p>
+        </div>
+
+        <div id="color-tooltip">
+            <div id="white" class="color-option" data-color="#ffffff"></div>
+
+            <div id="purple" class="color-option" data-color="#d7aefb"></div>
+
+            <div id="orange" class="color-option" data-color="#fbbc04"></div>
+
+            <div id="teal" class="color-option" data-color="#a7ffeb"></div>
+        </div>
+    </main>
+
+    <div id="modal" class="modal">
+        <div class="modal-content">
+            <input id="modal-title" class="modal-title" placeholder="Title" type="text">
+
+            <textarea id="modal-text" class="modal-text" placeholder="Take a note..." type="text"></textarea>
+
+            <button id="modal-close-button" class="modal-close-button">
+                Close
+            </button>
+        </div>
+    </div>
+
+    <script src="app.js" type="module"></script>
 </body>
 
 </html>
