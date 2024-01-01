@@ -1,3 +1,14 @@
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"
+import { getDatabase, ref, push, onValue, update, remove, get } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js"
+
+const appSettings = {
+    // databaseURL: 
+}
+
+const app = initializeApp(appSettings)
+const database = getDatabase(app)
+const googleKeep = ref(database, "google-keep")
+
 const form = document.getElementById("form")
 const noteTitle = document.getElementById("note-title")
 const noteText = document.getElementById("note-text")
@@ -9,34 +20,35 @@ const modalTitle = document.getElementById("modal-title")
 const modalText = document.getElementById("modal-text")
 const colorTooltip = document.getElementById("color-tooltip")
 
-let googleKeep = JSON.parse(localStorage.getItem('notes')) || []
-
-let selectedNote = {
-    title: "",
-    text: "",
-    color: "",
-    id: ""
-}
+let noteId = ""
 
 let timeoutId = ""
-let inTooltip = false
-let isTooltipOpen = false
-let inToolbarColor = false
+let inToolbar = false
+let inColorTooltip = false
+let isColorTooltipOpen = false
 
-render()
+onValue(googleKeep, snapshot => {
+    if (snapshot.exists()) {
+        clearNotes()
+        placeholder.style.display = "none"
+        Object.entries(snapshot.val()).forEach(displayNote)
+    } else {
+        placeholder.style.display = "block"
+    }
+})
 
 document.addEventListener("click", e => {
     handleFormClick(e)
 
     switch (true) {
         case !!e.target.dataset.color:
-            editNoteColor(e)
+            updateNoteColor(e)
             break
         case e.target.matches(".toolbar-color"):
-            handleTooltipClick(e)
+            handleColorToolbarClick(e)
             break
         case e.target.matches(".toolbar-delete"):
-            deleteNote(e)
+            removeNote(e)
             break
         case e.target.matches("#modal-close-button"):
             closeModal()
@@ -55,31 +67,31 @@ form.addEventListener("submit", e => {
 
     const title = noteTitle.value
     const text = noteText.value
-    if (title || text) addNote({ title, text })
+    if (title || text) pushNote(title, text)
 })
 
 document.addEventListener("mouseover", e => {
-    if (e.target.matches(".toolbar-color") && !isTooltipOpen) {
-        inToolbarColor = true
+    if (e.target.matches(".toolbar-color") && !isColorTooltipOpen) {
+        inToolbar = true
         openTooltip(e)
     }
 })
 
 document.addEventListener("mouseout", e => {
-    if (e.target.matches(".toolbar-color") && !isTooltipOpen) {
-        inToolbarColor = false
+    if (e.target.matches(".toolbar-color") && !isColorTooltipOpen) {
+        inToolbar = false
 
         clearTimeout(timeoutId)
         timeoutId = setTimeout(() => {
-            if (!inTooltip && !inToolbarColor) {
+            if (!inColorTooltip && !inToolbar) {
                 closeTooltip(e)
             }
-        }, 200);
+        }, 200)
     }
 })
 
 colorTooltip.addEventListener("mouseenter", () => {
-    inTooltip = true
+    inColorTooltip = true
 })
 
 colorTooltip.addEventListener("mouseleave", () => {
@@ -95,10 +107,65 @@ function handleFormClick(e) {
     if (isFormClicked) {
         openForm()
     } else if (title || text) {
-        addNote({ title, text })
+        pushNote(title, text)
     } else {
         closeForm()
     }
+}
+
+function clearNotes() {
+    notes.innerHTML = ""
+}
+
+function displayNote(note) {
+    const [id, { title, text, color }] = note
+    notes.innerHTML += `
+    <div class="note" style="background-color: ${color}" data-id="${id}">
+        <div class="note-title">${title}</div>
+        <div class="note-text">${text}</div>
+        <div class="toolbar">
+            <img
+                class="toolbar-color"
+                src="https://cdn.iconscout.com/icon/premium/png-512-thumb/palette-74796.png?f=avif&w=256"
+            >
+            <img
+                class="toolbar-delete"
+                src="https://cdn.iconscout.com/icon/free/png-512/delete-2902143-2411575.png?f=avif&w=256"
+            >
+        </div>
+    </div>`
+}
+
+function pushNote(title, text) {
+    const inputValue = { title, text, color: "#ffffff" }
+    push(googleKeep, inputValue)
+    closeForm()
+}
+
+async function getNote(id) {
+    const snapshot = await get(ref(database, `google-keep/${id}`))
+    if (snapshot.exists()) return snapshot.val()
+}
+
+function updateNote() {
+    const title = modalTitle.value
+    const text = modalText.value
+
+    update(ref(database, `google-keep/${noteId}`), { title, text })
+}
+
+function updateNoteColor(e) {
+    update(ref(database, `google-keep/${noteId}`), { color: e.target.dataset.color })
+}
+
+function removeNote(e) {
+    selectNote(e)
+    remove(ref(database, `google-keep/${noteId}`))
+}
+
+function selectNote(e) {
+    const note = e.target.closest(".note")
+    noteId = note.dataset.id
 }
 
 function openForm() {
@@ -111,79 +178,33 @@ function closeForm() {
     noteTitle.style.display = "none"
     formButtons.style.display = "none"
     noteText.style.height = "38px"
-
     noteTitle.value = ""
     noteText.value = ""
 }
 
-function addNote(formInput) {
-    const newNote = {
-        ...formInput,
-        color: "white",
-        id: createId()
-    }
-    googleKeep.unshift(newNote)
-
-    closeForm()
-    render()
-}
-
-function createId() {
-    const highestId = googleKeep.reduce((high, { id }) => high > id ? high : id, 0)
-    return String(Number(highestId) + 1)
-}
-
-function openModal(e) {
+async function openModal(e) {
     selectNote(e)
 
-    modalTitle.value = selectedNote.title
-    modalText.value = selectedNote.text
+    const { title, text, color } = await getNote(noteId)
 
-    modal.children[0].style.backgroundColor = selectedNote.color
-
+    modalTitle.value = title
+    modalText.value = text
+    modal.children[0].style.backgroundColor = color
     modal.classList.add("open-modal")
 }
 
 function closeModal() {
-    editNote()
-
+    updateNote()
     modal.classList.remove("open-modal")
 }
 
-function selectNote(e) {
-    const note = e.target.closest(".note")
-    selectedNote = googleKeep.find(({ id }) => id === note.dataset.id)
-}
-
-function editNote() {
-    const title = modalTitle.value
-    const text = modalText.value
-
-    if (title === selectedNote.title && text === selectedNote.text) return
-
-    selectedNote.title = modalTitle.value
-    selectedNote.text = modalText.value
-
-    googleKeep = googleKeep.filter(note => note !== selectedNote)
-    googleKeep.unshift(selectedNote)
-
-    render()
-}
-
-function deleteNote(e) {
-    selectNote(e)
-    googleKeep = googleKeep.filter(note => note !== selectedNote)
-
-    render()
-}
-
-function handleTooltipClick(e) {
+function handleColorToolbarClick(e) {
     clearTimeout(timeoutId)
 
-    if (isTooltipOpen) {
+    if (isColorTooltipOpen) {
         closeTooltip()
     } else {
-        isTooltipOpen = true
+        isColorTooltipOpen = true
         openTooltip(e)
     }
 }
@@ -195,8 +216,8 @@ function openTooltip(e) {
 }
 
 function closeTooltip() {
-    inTooltip = false
-    isTooltipOpen = false
+    inColorTooltip = false
+    isColorTooltipOpen = false
     colorTooltip.style.display = "none"
 }
 
@@ -204,39 +225,4 @@ function positionTooltip(e) {
     const noteCoords = e.target.getBoundingClientRect()
     colorTooltip.style.left = `${noteCoords.left - 82}px`
     colorTooltip.style.top = `${noteCoords.bottom + 4}px`
-}
-
-function editNoteColor(e) {
-    selectedNote.color = e.target.dataset.color
-    render()
-}
-
-function render() {
-    saveNotes()
-    displayNotes()
-}
-
-function saveNotes() {
-    localStorage.setItem("notes", JSON.stringify(googleKeep))
-}
-
-function displayNotes() {
-    placeholder.style.display = googleKeep.length ? "none" : "block"
-
-    notes.innerHTML = googleKeep.map(({ title, text, color, id }) => `
-<div class="note" style="background-color: ${color};" data-id="${id}">
-	<div class="note-title">${title}</div>
-	<div class="note-text">${text}</div>
-	<div class="toolbar">
-		<img
-			class="toolbar-color"
-			src="https://cdn.iconscout.com/icon/premium/png-512-thumb/palette-74796.png?f=avif&w=256"
-		>
-		<img
-			class="toolbar-delete"
-			src="https://cdn.iconscout.com/icon/free/png-512/delete-2902143-2411575.png?f=avif&w=256"
-		>
-	</div>
-</div>`
-    ).join("")
 }
