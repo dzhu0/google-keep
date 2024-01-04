@@ -1,6 +1,6 @@
 # Google Keep Clone with Firebase Integration
 
-This project is a simple web application that mimics the functionality of Google Keep, allowing users to create, edit, and delete notes. The application is built using HTML, CSS, and JavaScript, with Firebase serving as the backend database.
+This project is a web application that mimics the functionality of Google Keep, allowing users to create, edit, and delete notes. The application is built using HTML, CSS, and JavaScript, with Firebase serving as the backend database.
 
 ## Features
 
