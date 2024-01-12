@@ -36,8 +36,9 @@ let isColorTooltipOpen = false
 
 // Event listener for changes in the "google-keep" node
 onValue(googleKeep, snapshot => {
+    clearNotes()
+
     if (snapshot.exists()) {
-        clearNotes()
         placeholder.style.display = "none"
         // Display each note from the database
         Object.entries(snapshot.val()).forEach(displayNote)
